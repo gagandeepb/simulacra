@@ -1,0 +1,81 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1741246872,
+        "narHash": "sha256-Q6pMP4a9ed636qilcYX8XUguvKl/0/LGXhHcRI91p0U=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "10069ef4cf863633f57238f179a0297de84bd8d3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "trento_agent_src": "trento_agent_src",
+        "trento_wanda_src": "trento_wanda_src",
+        "trento_web_src": "trento_web_src"
+      }
+    },
+    "trento_agent_src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731337035,
+        "narHash": "sha256-N1DMUvaOaxrCnKI8dVzQFj6nkQwJgRNWWWx0f5hnoyc=",
+        "owner": "trento-project",
+        "repo": "agent",
+        "rev": "424cb1daff48a0688074b6f99f44c0e26b2e8f54",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trento-project",
+        "ref": "refs/tags/2.4.0",
+        "repo": "agent",
+        "type": "github"
+      }
+    },
+    "trento_wanda_src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1741351158,
+        "narHash": "sha256-HMZeF8MGjkdG0jDwnhPRjp3EshncVuisTByio1xgqqo=",
+        "owner": "trento-project",
+        "repo": "wanda",
+        "rev": "d1c39a6b91cc0d5b03f48c1af8c8b336b33b3f3c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trento-project",
+        "ref": "alt-experiment",
+        "repo": "wanda",
+        "type": "github"
+      }
+    },
+    "trento_web_src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731418380,
+        "narHash": "sha256-SyROMag+le0Cv9EDpZk/VU9i5BkqhZhZef8TdXNUoTc=",
+        "owner": "trento-project",
+        "repo": "web",
+        "rev": "a5ec430c6dcb51d132466a4500d7e3715e049f37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trento-project",
+        "ref": "refs/tags/2.4.0",
+        "repo": "web",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

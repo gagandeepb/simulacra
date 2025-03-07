@@ -12,39 +12,19 @@
       flake = false;
     };
     trento_wanda_src = {
-      # url = "git+file:///home/gaganb/wrk/wanda";
-      url = "github:trento-project/wanda";
+      url = "github:trento-project/wanda/alt-experiment";
       flake = false;
     };
-    rhai_rustler = {
-      url = "github:rhaiscript/rhai_rustler";
-      # url = "git+file:///home/gaganb/wrk/rhai_rustler";
-      flake = false;
-    };
-    rustler = {
-      url = "git+file:///home/gaganb/wrk/rustler";
-      # url = "github:rusterlium/rustler";
-      flake = false;
-    };
-    # rustler_precompiled = {
-    #   url = "github:philss/rustler_precompiled";
-    #   flake = false;
-    # };
-    crane.url = "github:ipetkov/crane";
-    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = inputs@{ nixpkgs, trento_agent_src, trento_web_src, trento_wanda_src, rust-overlay, crane, rhai_rustler, rustler, ... }:
+  outputs = inputs@{ nixpkgs, trento_agent_src, trento_web_src, trento_wanda_src, ... }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { config = { }; overlays = [ (import rust-overlay) ]; system = system; };
-      rustup = pkgs.rustup;
+      pkgs = import nixpkgs { config = { }; overlays = [ ]; system = system; };
       trento_agent = import ./trento_agent.nix { inherit pkgs trento_agent_src; };
       trento_web_release = import ./trento_web.nix { inherit pkgs trento_web_src system; };
       prometheus_node_exporter = pkgs.prometheus-node-exporter;
-
-      # rustler_built = inputs.rustler.packages.${system}.default;
-      trento_wanda_release = import ./trento_wanda.nix { inherit pkgs trento_wanda_src system rhai_rustler crane rustler; };
+      trento_wanda_release = import ./trento_wanda.nix { inherit pkgs trento_wanda_src system; };
     in
 
     {
