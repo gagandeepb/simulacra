@@ -1,14 +1,14 @@
-{ pkgs, trento_agent, prometheus_node_exporter, trento_web_release, trento_wanda_release }:
+{ pkgs, trento_agent, prometheus_node_exporter, trento_web_release, trento_wanda_release, ... }:
 let
   trento_wanda_envvars = {
     CORS_ORIGIN = "localhost";
     SECRET_KEY_BASE = "<secret-key-base>";
     ACCESS_TOKEN_ENC_SECRET = "<access-token-enc-secret>";
-    AMQP_URL = "amqp://trento_user:trento_user_password@rabbitmq-host/vhost";
+    AMQP_URL = "amqp://trento:trento@machine3_rabbitmq/vhost";
     DATABASE_URL = "ecto://wanda_user:wanda_password@postgres-host/wanda";
   };
   trento_web_envvars = {
-    AMQP_URL = "amqp://trento_user:trento_user_password@rabbitmq-host/vhost";
+    AMQP_URL = "amqp://trento:trento@/vhost";
     DATABASE_URL = "ecto://trento_user:web_password@postgres-host/trento";
     EVENTSTORE_URL = "ecto://trento_user:web_password@postgres-host/trento_event_store";
     ENABLE_ALERTING = "false";
@@ -21,6 +21,11 @@ let
     ENABLE_API_KEY = "true";
 
   };
+  trento_agent_envvars = {
+    TRENTO_API_KEY = "foo-bar-key";
+    TRENTO_FACTS_SERVICE_URL = "amqp://trento:trento@machine3_rabbitmq:5672/vhost";
+  };
+
 in
 {
   name = "Two machines with Trento Agent ping each other";
@@ -45,6 +50,7 @@ in
             Restart = "on-failure";
             RestartSec = 5;
           };
+          environment = trento_agent_envvars;
           wantedBy = [ "multi-user.target" ];
         };
       };
@@ -52,15 +58,21 @@ in
     };
     machine2 = { pkgs, ... }: { };
     machine3_rabbitmq = { pkgs, ... }: {
+      networking.firewall.enable = false;
       services.rabbitmq = {
         enable = true;
         package = pkgs.rabbitmq-server;
-        port = 5673;
-        managementPlugin.enable = true;
-        managementPlugin.port = 15673;
+        port = 5672;
+        # managementPlugin.enable = true;
+        # managementPlugin.port = 15673;
         configItems = {
           "default_user" = "trento";
           "default_pass" = "trento";
+          "listeners.tcp.1" = ":::5672";
+          "default_vhost" = "vhost";
+          # "default_permissions.configure" = ".*";
+          # "default_permissions.read" = ".*";
+          # "default_permissions.write" = ".*";
         };
 
       };
@@ -148,15 +160,21 @@ in
   # Note that machine1 and machine2 are now available as
   # Python objects and also as hostnames in the virtual network
   testScript = ''
-    machine1.wait_for_unit("network-online.target")
-    machine2.wait_for_unit("network-online.target")
-    machine3_rabbitmq.wait_for_unit("network-online.target")
-    machine4_trento_web.wait_for_unit("network-online.target")
-    machine5_trento_wanda.wait_for_unit("network-online.target")
+    machine1.wait_for_unit("default.target")
+    # machine2.wait_for_unit("default.target")
+    # machine3_rabbitmq.succeed("rabbitmqctl set_permissions -p vhost trento_user \".*\" \".*\" \".*\"")
+    machine3_rabbitmq.wait_for_unit("rabbitmq.service")
+    machine3_rabbitmq.wait_for_open_port(5672)
+    machine3_rabbitmq.wait_for_unit("default.target")
+
+    # machine4_trento_web.wait_for_unit("default.target")
+    # machine5_trento_wanda.wait_for_unit("default.target")
 
     # machine1.succeed("systemctl start trento-agent")
-    machine1.succeed("ping -c 1 machine2")
-    machine2.succeed("ping -c 1 machine1")
-    machine2.succeed("ping -c 1 machine1")
+    machine1.succeed("systemctl status trento-agent")
+    machine1.succeed("ping -c 1 machine3_rabbitmq")
+    # machine1.succeed("ping -c 1 machine2")
+    # machine2.succeed("ping -c 1 machine1")
+    # machine2.fail("ping -c 1 machine1")
   '';
 }

@@ -37,7 +37,7 @@
       # packages."x86_64-linux".default = pkgs.testers.runNixOSTest (import ./test.nix { inherit pkgs trento_agent prometheus_node_exporter trento_web_release trento_wanda_release; });
 
       checks."x86_64-linux".default = pkgs.testers.runNixOSTest (import ./test.nix {
-        inherit trento_agent prometheus_node_exporter;
+        inherit pkgs trento_agent prometheus_node_exporter trento_web_release trento_wanda_release;
       });
     };
 }

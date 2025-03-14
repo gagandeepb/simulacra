@@ -55,14 +55,11 @@ let
   # };
   #
   pkg = beamPackages.mixRelease {
-    TOP_SRC = src;
-    inherit pname version elixir src mixFodDeps;
+    inherit pname version elixir src;
 
+    mixFodDeps = mixFodDeps;
     postBuild = ''
-      ln -sf ${mixFodDeps}/deps deps
-
-      mix release
-            
+      mix do deps.loadpaths --no-deps-check, phx.digest
     '';
 
   };
