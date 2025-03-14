@@ -58,6 +58,7 @@ let
     inherit pname version elixir src;
 
     mixFodDeps = mixFodDeps;
+    removeCookie = false;
     postBuild = ''
       mix do deps.loadpaths --no-deps-check, phx.digest
     '';

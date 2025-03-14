@@ -27,6 +27,7 @@ let
         RHAI_RUSTLER_FORCE_BUILD = "false";
         RUSTLER_PRECOMPILED_GLOBAL_CACHE_PATH = "unused-but-required";
       };
+      removeCookie = false;
       postBuild = ''
         mix do deps.loadpaths --no-deps-check, phx.digest
       '';
