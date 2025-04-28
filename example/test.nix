@@ -32,7 +32,6 @@ in
   name = "Two machines with Trento Agent ping each other";
 
   nodes = {
-    # These configs do not add anything to the default system setup
     machine1 = { pkgs, ... }: {
       systemd.services = {
         prometheus_node_exporter.enable = true;
@@ -66,8 +65,6 @@ in
         enable = true;
         package = pkgs.rabbitmq-server;
         port = 5672;
-        # managementPlugin.enable = true;
-        # managementPlugin.port = 15673;
         configItems = {
           "default_user" = "trento";
           "default_pass" = "trento";

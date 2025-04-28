@@ -28,11 +28,7 @@
     in
 
     {
-      # devShell.default = pkgs.mkShell {
-      #   buildInputs = with pkgs; [ pkg-config rust-bin.stable.latest.default ];
-      # };
       packages."x86_64-linux".trento_agent = trento_agent;
-      # packages."x86_64-linux".rustler = inputs.rustler.packages.${system}.default;
       packages."x86_64-linux".default = trento_wanda_release;
       # packages."x86_64-linux".default = pkgs.testers.runNixOSTest (import ./test.nix { inherit pkgs trento_agent prometheus_node_exporter trento_web_release trento_wanda_release; });
 
